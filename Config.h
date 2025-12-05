@@ -25,7 +25,7 @@
 // =================================================================================================================================
 // CONTROLLER ======================================================================================================================
 
-#define HOST_NAME            "OnStep-SWS" // p-SWS", This devices name up to 16 chars (collapses to mDNS name "onstepsws".)   Adjust
+#define HOST_NAME            "MLAstro_SAL-33" // p-SWS", This devices name up to 16 chars (collapses to mDNS name "onstepsws".)   Adjust
 
 // OPERATIONAL MODE ----------------------------------------------------------------------------------------------------------------
 #define OPERATIONAL_MODE             WIFI //   WIFI, Or use ETHERNET_W5100 or ETHERNET_W5500                                 <-Req'd
@@ -51,9 +51,9 @@
 
 // DISPLAY -------------------------------------------------------------------------------------------------------------------------
 #define DISPLAY_LANGUAGE             L_en //   L_en, English. Or L_ce, L_de, L_en, L_us, L_es two letter country code.        Adjust
-#define DISPLAY_WEATHER                ON //     ON, ON ambient conditions in locale default units.                           Option
+#define DISPLAY_WEATHER                OFF //     ON, ON ambient conditions in locale default units.                           Option
 #define DISPLAY_INTERNAL_TEMPERATURE  OFF //    OFF, ON internal MCU temp. in locale default units.                           Option
-#define DISPLAY_RESET_CONTROLS         ON //     ON, ON allows reset if supported, FWU for STM32 firmware upload pin HIGH.    Option
+#define DISPLAY_RESET_CONTROLS         OFF //     ON, ON allows reset if supported, FWU for STM32 firmware upload pin HIGH.    Option
 
 #define DISPLAY_SERVO_MONITOR         OFF //    OFF, ON to display the servo monitor for OnStepX (any axis.)                  Option
 #define DISPLAY_SERVO_ORIGIN_CONTROLS OFF //    OFF, ON to display control to set the absolute encoder origin for servos.     Option
