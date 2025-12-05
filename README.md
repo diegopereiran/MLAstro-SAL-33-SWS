@@ -1,3 +1,10 @@
+MLAStro SAL-33 Smart Web Server firmware.
+===========================
+# What is fork?
+This is the fork that carries the official firmware and all the modification to the Smart Web Server firmware that is currently on the MLAstro SAL-33 harmonic mount. You can use this fork to reflash your SAL-33 SWS and customize it anyway you like.
+For the MLAstro SAL-33 OnStepX firmware, please see this.
+https://github.com/minhlead/MLAstro-SAL-33
+
 # OnStep Smart Web Server
 This is the WiFi and Ethernet web server for OnStep, it is also sometimes referred to as the "SWS".
 The SWS enables OnStep to be controlled from a website and/or by passing commands over IP.
