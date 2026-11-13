@@ -55,7 +55,7 @@
 #define DISPLAY_WEATHER               OFF //     ON, ON ambient conditions in locale default units.                           Option
 #define DISPLAY_INTERNAL_TEMPERATURE  OFF //    OFF, ON internal MCU temp. in locale default units.                           Option
 #define DISPLAY_RESET_CONTROLS        OFF //     ON, ON allows reset if supported, FWU for STM32 firmware upload pin HIGH.    Option
-#define DISPLAY_COORDINATE_ORIGIN     OFF //    OFF, ON to display the coordinate origin control tile on the mount page.      Option
+#define DISPLAY_COORDINATE_ORIGIN      ON //    OFF, ON to display the coordinate origin control tile on the mount page.      Option
 #define DISPLAY_SERVO_MONITOR         OFF //    OFF, ON to display the servo monitor for OnStepX (any axis.)                  Option
 #define DISPLAY_STALLGUARD_MONITOR    OFF //    OFF, ON to display the StallGuard monitor for OnStepX (any axis.)             Option
 
