@@ -26,6 +26,8 @@
 #define L_OK "Ok"
 #define L_ON "On"
 #define L_OFF "Off"
+#define L_VISIT "Visitar"
+#define L_PAUSE "Pausa"
 #define L_START "Iniciar"
 #define L_DELTA "Delta"
 #define L_DP_MSG  "Rel."
@@ -291,6 +293,9 @@
 #define L_PARK "Estacionar"
 #define L_SET_PARK "Colocar en Posición de Estacionamiento"
 #define L_SET_PARK_CURRENT_COORDS "Establecer la posición de estacionamiento en las coordenadas actuales"
+#define L_COORD_ORIGIN_TITLE "Origen de Coordenadas"
+#define L_COORD_ORIGIN "Establecer Origen de Coordenadas"
+#define L_COORD_ORIGIN_MSG "En la posicion de inicio y con el seguimiento apagado, establece el origen fisico/de coordenadas usado por los limites de sincronizacion."
 
 #define L_TRK_FASTER "más rápido"
 #define L_TRK_SLOWER "más lento"
@@ -306,6 +311,7 @@
 #define L_MERIDIAN_FLIP_AUTO "Volteo de meridiano automático en el límite"
 #define L_MERIDIAN_FLIP_NOW "Ahora"
 #define L_MERIDIAN_FLIP_PAUSE "Volteo de Meridiano, Pausa en Posicion de Inicio"
+#define L_MERIDIAN_FLIP_HOMING "Volteo de meridiano, posicion de inicio"
 #define L_MERIDIAN_FLIP_PPS "Volteo de Meridiano, lado del muelle preferido"
 
 #define L_ORIENTATION_AUTO "Cambio de orientación"
@@ -346,6 +352,17 @@
 #define L_LIMITS_RANGE_OVERHEAD "Tope Superior, altitud máxima 60 to 90&deg;"
 #define L_LIMITS_RANGE_MERIDIAN_E "Meridiano pasado al este  &pm;270&deg;"
 #define L_LIMITS_RANGE_MERIDIAN_W "Meridiano pasado al oeste &pm;270&deg;"
+
+// runtime sync limits
+#define L_SYNC_LIMITS_TITLE "Límites de sincronización/alineación"
+#define L_SYNC_LIMIT_SUMMARY_POLAR "Límite polar"
+#define L_SYNC_LIMIT_SUMMARY_OFFSET1 "Límite de desfase, Eje1"
+#define L_SYNC_LIMIT_SUMMARY_OFFSET2 "Eje2"
+#define L_SYNC_LIMIT_POLAR "Polar, 60 a 90&deg;"
+#define L_SYNC_LIMIT_AXIS1 "Desfase del eje 1, 0 a 30&deg;"
+#define L_SYNC_LIMIT_AXIS2 "Desfase del eje 2, 0 a 30&deg;"
+#define L_SYNC_LIMIT_POLAR_OFF "Polar 90 = OFF"
+#define L_SYNC_LIMIT_OFFSET_OFF "Desfase 0 = OFF"
 
 // location
 #define L_LOCATION_TITLE "Horario y Ubicación"
@@ -404,7 +421,6 @@
 #define L_ADV_SET_FOOTER_MSG0 "La mayoría de los cambios en la configuración de los ejes requieren un reinicio para que surtan efecto."
 #define L_ADV_SET_FOOTER_MSG1 "Después de presionar [Cargar], tome nota de los cambios anteriores, ya que la carga puede haber sido rechazada debido a un parámetro no válido."
 #define L_ADV_SET_FOOTER_MSG2 "Cuando elige [Revertir], ese grupo deja de estar disponible para editar hasta que reinicia OnStep."
-#define L_ADV_SET_FOOTER_MSG3 "Si IRUN se establece en un valor diferente al predeterminado de Config.h, IHOLD se establece en(HALF.)"
 #define L_ADV_SET_FOOTER_MSG4 "Cambiar la relación de Pasos de Axis1 por rotación de engranajes y Pasos por grado puede dañar el área de memoria de Library NV, primero haga una copia de seguridad de los catálogos si es necesario."
 
 // reset control
@@ -424,7 +440,7 @@
 #define L_NETWORK_PWD "Contraseña"
 #define L_NETWORK_PWD_MSG "8 caracteres mínimo."
 #define L_NETWORK_EN_DHCP "Habilitar DHCP"
-#define L_NETWORK_EN_DHCP_MSG "Nota: las direcciones anteriores se ignoran si DHCP está habilitado"
+#define L_NETWORK_EN_DHCP_MSG "Si DHCP esta activo, se ignoran IPs"
 #define L_NETWORK_EN_STA "Habilitar modo de estación"
 #define L_IP_ADDRESS "Dirección IP"
 #define L_GATEWAY "Puerta de enlace"
@@ -432,9 +448,13 @@
 #define L_NETWORK_CHA "Canal"
 #define L_NETWORK_EN_AP_MODE "Habilitar modo de punto de acceso"
 
+#define L_NETWORK_OTA_TITLE "Actualización de firmware OTA SWS"
+#define L_NETWORK_EN_OTA "Activar modo OTA"
+#define L_REBOOT_OTA "Reiniciar en modo OTA"
+
 #define L_NETWORK_CONFIG_SECURITY "Configuración de Seguridad de red"
 
-#define L_NETWORK_AP "Modo de punto de acceso"
+#define L_NETWORK_AP "Modo de punto de acceso (auto si el modo Estación no conecta)"
 
 #define L_NETWORK_RESTART_MSG "Debes <u>manualmente</u> reiniciar para que los cambios surtan efecto."
 

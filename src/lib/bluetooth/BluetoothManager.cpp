@@ -22,7 +22,11 @@ bool BluetoothManager::init() {
 
     if (strlen(sta->passkey) > 0) {
       VF(" w/passkey "); V(bluetoothManager.sta->passkey);
-      SERIAL_BT.setPin(bluetoothManager.sta->passkey);
+      #if ESP_ARDUINO_VERSION >= 0x30000
+        SERIAL_BT.setPin(bluetoothManager.sta->passkey, strlen(bluetoothManager.sta->passkey));
+      #else
+        SERIAL_BT.setPin(bluetoothManager.sta->passkey);
+      #endif
     }
 
     VF("...");
@@ -50,15 +54,8 @@ void BluetoothManager::disconnect() {
 void BluetoothManager::readSettings() {
   if (settingsReady) return;
 
-  #ifdef NV_BT_SETTINGS_BASE
-    if (BluetoothSettingsSize < sizeof(BluetoothSettings)) { nv.initError = true; DL("ERR: BluetoothManager::init(), BluetoothSettingsSize error"); }
-
-    if (!nv.hasValidKey() || nv.isNull(NV_BT_SETTINGS_BASE, sizeof(BluetoothSettings))) {
-      VLF("MSG: Bluetooth, writing defaults to NV");
-      nv.writeBytes(NV_BT_SETTINGS_BASE, &settings, sizeof(BluetoothSettings));
-    }
-
-    nv.readBytes(NV_BT_SETTINGS_BASE, &settings, sizeof(BluetoothSettings));
+  #ifdef NV_BT_SETTINGS
+  if (!nv().kv().getOrInit("BT_SETTINGS", settings)) { DLF("WRN: Nv, init failed for BT_SETTINGS"); }
   #endif
 
   VF("MSG: Bluetooth, Master Pwd = "); VL(settings.masterPassword);
@@ -82,9 +79,9 @@ void BluetoothManager::readSettings() {
 void BluetoothManager::writeSettings() {
   if (!settingsReady) return;
   
-  #ifdef NV_BT_SETTINGS_BASE
+  #ifdef NV_BT_SETTINGS
     VLF("MSG: BluetoothManager, writing settings to NV");
-    nv.writeBytes(NV_BT_SETTINGS_BASE, &settings, sizeof(BluetoothSettings));
+    nv().kv().put("BT_SETTINGS", settings);
   #endif
 }
 

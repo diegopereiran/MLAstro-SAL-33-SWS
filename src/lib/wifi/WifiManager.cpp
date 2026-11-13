@@ -32,6 +32,11 @@ bool WifiManager::init() {
       WiFi.hostname(name);
     #endif
 
+    if (settings.accessPointEnabled == false && settings.stationEnabled == false) {
+      VF("MSG: WiFi, re-enabling access point mode to prevent lock-out!");
+      settings.accessPointEnabled = true;
+    }
+
   TryAgain:
     if (settings.accessPointEnabled && !settings.stationEnabled) {
       VF("MSG: WiFi, starting Soft AP for SSID "); V(settings.ap.ssid); V(" PWD "); V(settings.ap.pwd); V(" CH "); VL(settings.ap.channel);
@@ -42,8 +47,8 @@ bool WifiManager::init() {
       WiFi.mode(WIFI_AP);
     } else
     if (!settings.accessPointEnabled && settings.stationEnabled) {
-      VF("MSG: WiFi, starting Station for SSID "); V(sta->ssid); V(" PWD "); VL(sta->pwd);
-      WiFi.begin(sta->ssid, sta->pwd);
+      VF("MSG: WiFi, starting Station for SSID "); V(sta->ssid); V(" PWD "); VL(staPwd->password);
+      WiFi.begin(sta->ssid, staPwd->password);
       #if defined(CONFIG_IDF_TARGET_ESP32S2) || defined(CONFIG_IDF_TARGET_ESP32C3)
         WiFi.setTxPower(WIFI_POWER_8_5dBm);
       #endif
@@ -52,13 +57,22 @@ bool WifiManager::init() {
     if (settings.accessPointEnabled && settings.stationEnabled) {
       VF("MSG: WiFi, starting Soft AP for SSID "); V(settings.ap.ssid); V(" PWD "); V(settings.ap.pwd); V(" CH "); VL(settings.ap.channel);
       WiFi.softAP(settings.ap.ssid, settings.ap.pwd, settings.ap.channel);
-      VF("MSG: WiFi, starting Station for SSID "); V(sta->ssid); V(" PWD "); VL(sta->pwd);
-      WiFi.begin(sta->ssid, sta->pwd);
+      VF("MSG: WiFi, starting Station for SSID "); V(sta->ssid); V(" PWD "); VL(staPwd->password);
+      WiFi.begin(sta->ssid, staPwd->password);
       #if defined(CONFIG_IDF_TARGET_ESP32S2) || defined(CONFIG_IDF_TARGET_ESP32C3)
         WiFi.setTxPower(WIFI_POWER_8_5dBm);
       #endif
       WiFi.mode(WIFI_AP_STA);
     }
+
+    // Keep command links responsive; ESP cores may enable modem sleep by default.
+    #if !defined(WIFI_MANAGER_ALLOW_SLEEP)
+      #if defined(ESP32)
+        WiFi.setSleep(false);
+      #elif defined(ESP8266)
+        WiFi.setSleepMode(WIFI_NONE_SLEEP);
+      #endif
+    #endif
 
     delay(100);
 
@@ -97,20 +111,22 @@ bool WifiManager::init() {
       VLF("MSG: WiFi, started");
 
       #if MDNS_SERVER == ON && !defined(ESP8266)
-        sstrcpy(name, MDNS_NAME, 32);
+        sstrcpy(name, MDNS_NAME);
         strtohostname2(name);
         if (MDNS.begin(name)) { VF("MSG: WiFi, mDNS started for "); VL(name); } else { DF("WRN: WiFi, mDNS start FAILED for "); DL(name); }
       #endif
 
       if (staNameLookup && strlen(wifiManager.sta->host) > 0) {
         IPAddress ip;
+        bool resolved = false;
         char name[32] = "";
-        strcpy(name, wifiManager.sta->host);
+        sstrcpy(name, wifiManager.sta->host);
         strtohostname(name);
 
-        if (WiFi.hostByName(name, ip)) {
+        if (WiFi.hostByName(name, ip) && validip4(ip)) {
           VF("MSG: WiFi, host name "); V(name); VF(" DNS resolved to "); VL(ip.toString().c_str());
           ip4toip4(wifiManager.sta->target, ip);
+          resolved = true;
         } else {
           VF("MSG: WiFi, host name "); V(name); VLF(" DNS resolution failed!");
           #if MDNS_CLIENT == ON && !defined(ESP8266)
@@ -119,10 +135,16 @@ bool WifiManager::init() {
             if (validip4(ip)) {
               ip4toip4(wifiManager.sta->target, ip);
               VF("MSG: WiFi, host name "); V(name); VF(" mDNS resolved to "); VL(ip.toString().c_str());
+              resolved = true;
             } else {
               VF("MSG: WiFi, host name "); V(name); VLF(" mDNS resolution failed!");
             }
           #endif
+        }
+
+        if (!resolved && !validip4(wifiManager.sta->target) && validip4(wifiManager.sta->gw)) {
+          ip4toip4(wifiManager.sta->target, wifiManager.sta->gw);
+          VF("MSG: WiFi, using gateway as target "); VL(IPAddress(wifiManager.sta->target).toString().c_str());
         }
       }
 
@@ -150,7 +172,8 @@ bool WifiManager::init() {
 
 void WifiManager::setStation(int number) {
   if (number >= 1 && number <= WifiStationCount) stationNumber = number;
-  sta = &settings.station[stationNumber - 1];
+  sta = &station[stationNumber - 1];
+  staPwd = &stationPassword[stationNumber - 1];
 }
 
 void WifiManager::disconnect() {
@@ -163,15 +186,18 @@ void WifiManager::disconnect() {
 void WifiManager::readSettings() {
   if (settingsReady) return;
 
-  #ifdef NV_WIFI_SETTINGS_BASE
-    if (WifiSettingsSize < sizeof(WifiSettings)) { nv.initError = true; DL("ERR: WifiManager::init(), WifiSettingsSize error"); }
+  #ifdef NV_WIFI_SETTINGS
+    VLF("MSG: WifiManager, reading settings from NV");
 
-    if (!nv.hasValidKey() || nv.isNull(NV_WIFI_SETTINGS_BASE, sizeof(WifiSettings))) {
-      VLF("MSG: WiFi, writing defaults to NV");
-      nv.writeBytes(NV_WIFI_SETTINGS_BASE, &settings, sizeof(WifiSettings));
+    if (!nv().kv().getOrInit("WIFI_SETTINGS", settings)) { DLF("WRN: Nv, init failed for WIFI_SETTINGS"); }
+
+    for (uint8_t i = 1; i <= WifiStationCount; i++) {
+      char keyStr[24];
+      snprintf(keyStr, sizeof(keyStr), "WIFI_STATION%u", i);
+      if (!nv().kv().getOrInit(keyStr, station[i - 1])) { DF("WRN: Nv, init failed for "); DL(keyStr); }
+      snprintf(keyStr, sizeof(keyStr), "WIFI_STATION%u_PWD", i);
+      if (!nv().kv().getOrInit(keyStr, stationPassword[i - 1])) { DF("WRN: Nv, init failed for "); DL(keyStr); }
     }
-
-    nv.readBytes(NV_WIFI_SETTINGS_BASE, &settings, sizeof(WifiSettings));
   #endif
 
   #if DEBUG != OFF
@@ -197,8 +223,8 @@ void WifiManager::readSettings() {
 
     VF("MSG: WiFi, Sta Select   = "); VL(stationNumber);
 
-    for (int station = 1; station <= WifiStationCount; station++) {
-      setStation(station);
+    for (int i = 1; i <= WifiStationCount; i++) {
+      setStation(i);
 
       IPAddress sta_ip = IPAddress(sta->ip); UNUSED(sta_ip);
       IPAddress sta_gw = IPAddress(sta->gw); UNUSED(sta_gw);
@@ -206,7 +232,7 @@ void WifiManager::readSettings() {
       IPAddress target = IPAddress(sta->target); UNUSED(target);
 
       VF("MSG: WiFi, Sta"); V(stationNumber); VF(" SSID    = "); VL(sta->ssid);
-      VF("MSG: WiFi, Sta"); V(stationNumber); VF(" PWD     = "); VL(sta->pwd);
+      VF("MSG: WiFi, Sta"); V(stationNumber); VF(" PWD     = "); VL(staPwd->password);
       VF("MSG: WiFi, Sta"); V(stationNumber); VF(" DHCP En = "); VL(sta->dhcpEnabled);
       VF("MSG: WiFi, Sta"); V(stationNumber); VF(" IP      = "); VL(sta_ip.toString());
       VF("MSG: WiFi, Sta"); V(stationNumber); VF(" GATEWAY = "); VL(sta_gw.toString());
@@ -222,10 +248,18 @@ void WifiManager::readSettings() {
 
 void WifiManager::writeSettings() {
   if (!settingsReady) return;
-  
-  #ifdef NV_WIFI_SETTINGS_BASE
+
+  #ifdef NV_WIFI_SETTINGS
     VLF("MSG: WifiManager, writing settings to NV");
-    nv.writeBytes(NV_WIFI_SETTINGS_BASE, &settings, sizeof(WifiSettings));
+    nv().kv().put("WIFI_SETTINGS", settings);
+
+    for (uint8_t i = 1; i <= WifiStationCount; i++) {
+      char keyStr[24];
+      snprintf(keyStr, sizeof(keyStr), "WIFI_STATION%u", i);
+      nv().kv().put(keyStr, station[i - 1]);
+      snprintf(keyStr, sizeof(keyStr), "WIFI_STATION%u_PWD", i);
+      nv().kv().put(keyStr, stationPassword[i - 1]);
+    }
   #endif
 }
 

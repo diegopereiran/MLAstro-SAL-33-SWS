@@ -26,6 +26,8 @@
 #define L_OK "Ok"
 #define L_ON "On"
 #define L_OFF "Off"
+#define L_VISIT "Visit"
+#define L_PAUSE "Pause"
 #define L_START "Start"
 #define L_DELTA "Delta"
 #define L_DP_MSG "Relative"
@@ -291,6 +293,9 @@
 #define L_PARK "Park"
 #define L_SET_PARK "Set-Park"
 #define L_SET_PARK_CURRENT_COORDS "Set park position at current coordinates"
+#define L_COORD_ORIGIN_TITLE "Coordinate Origin"
+#define L_COORD_ORIGIN "Set Coordinate Origin"
+#define L_COORD_ORIGIN_MSG "At home with tracking off, establishes the physical/coordinate origin used for sync limits."
 
 #define L_TRK_FASTER "faster"
 #define L_TRK_SLOWER "slower"
@@ -306,6 +311,7 @@
 #define L_MERIDIAN_FLIP_AUTO "Automatic Meridian Flip at Limit"
 #define L_MERIDIAN_FLIP_NOW "Now"
 #define L_MERIDIAN_FLIP_PAUSE "Meridian Flip, Pause at Home"
+#define L_MERIDIAN_FLIP_HOMING "Meridian Flip Homing"
 #define L_MERIDIAN_FLIP_PPS "Meridian Flip, Preferred Pier Side"
 
 #define L_ORIENTATION_AUTO "Orientation Change"
@@ -346,6 +352,17 @@
 #define L_LIMITS_RANGE_OVERHEAD "Overhead, max altitude 60 to 90&deg;"
 #define L_LIMITS_RANGE_MERIDIAN_E "Past Meridian, East of pier &pm;270&deg;"
 #define L_LIMITS_RANGE_MERIDIAN_W "Past Meridian, West of pier &pm;270&deg;"
+
+// runtime sync limits
+#define L_SYNC_LIMITS_TITLE "Sync/Align Limits"
+#define L_SYNC_LIMIT_SUMMARY_POLAR "Limit Polar Sync"
+#define L_SYNC_LIMIT_SUMMARY_OFFSET1 "Limit Offset Sync, Axis1"
+#define L_SYNC_LIMIT_SUMMARY_OFFSET2 "Axis2"
+#define L_SYNC_LIMIT_POLAR "Polar, 60 to 90&deg;"
+#define L_SYNC_LIMIT_AXIS1 "Axis1 Offset, 0 to 30&deg;"
+#define L_SYNC_LIMIT_AXIS2 "Axis2 Offset, 0 to 30&deg;"
+#define L_SYNC_LIMIT_POLAR_OFF "Polar 90 = OFF"
+#define L_SYNC_LIMIT_OFFSET_OFF "Offset 0 = OFF"
 
 // location
 #define L_LOCATION_TITLE "Time and Location"
@@ -406,7 +423,6 @@
 #define L_ADV_SET_FOOTER_MSG0 "Most axis setting changes require a reboot to take effect."
 #define L_ADV_SET_FOOTER_MSG1 "After pressing [Upload] take note of changes above since the upload may have been rejected due to an invalid parameter."
 #define L_ADV_SET_FOOTER_MSG2 "When you choose to [Revert] that group becomes unavailable for editing until you reboot OnStep."
-#define L_ADV_SET_FOOTER_MSG3 "If IRUN is set to other than the Config.h default, IHOLD is set to 50% (HALF.)"
 #define L_ADV_SET_FOOTER_MSG4 "Changing the ratio of Axis1 Steps per worm rotation and Steps per degree may corrupt the Library NV memory area, backup any catalogs first if needed."
 
 // reset control
@@ -426,7 +442,7 @@
 #define L_NETWORK_PWD "Password"
 #define L_NETWORK_PWD_MSG "8 char min."
 #define L_NETWORK_EN_DHCP "Enable DHCP"
-#define L_NETWORK_EN_DHCP_MSG "Note: above addresses are ignored if DHCP is enabled"
+#define L_NETWORK_EN_DHCP_MSG "Note: above addresses ignored if DHCP is enabled"
 #define L_NETWORK_EN_STA "Enable Station Mode"
 #define L_IP_ADDRESS "IP Address"
 #define L_GATEWAY "Gateway"
@@ -434,9 +450,13 @@
 #define L_NETWORK_CHA "Channel"
 #define L_NETWORK_EN_AP_MODE "Enable Access-Point Mode"
 
+#define L_NETWORK_OTA_TITLE "OTA SWS firmware update"
+#define L_NETWORK_EN_OTA "Enable OTA Mode"
+#define L_REBOOT_OTA "Reboot into OTA mode"
+
 #define L_NETWORK_CONFIG_SECURITY "Network Configuration Security"
 
-#define L_NETWORK_AP "Access-Point mode"
+#define L_NETWORK_AP "Access-Point mode (auto-enabled if Station mode fails to connect)"
 
 #define L_NETWORK_RESTART_MSG "You must <u>manually</u> restart for changes to take effect."
 

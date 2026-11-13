@@ -35,6 +35,8 @@
 #define L_OK "Tun"
 #define L_ON "An"
 #define L_OFF "Aus"
+#define L_VISIT "Anfahren"
+#define L_PAUSE "Pause"
 #define L_START "Anfang"
 #define L_DELTA "Delta"
 #define L_DP_MSG  "Rel."
@@ -301,6 +303,9 @@
 #define L_PARK "Parken"
 #define L_SET_PARK "Setze Parkposition"
 #define L_SET_PARK_CURRENT_COORDS "Parkposition auf aktuelle Koordinaten setzen"
+#define L_COORD_ORIGIN_TITLE "Koordinatenursprung"
+#define L_COORD_ORIGIN "Koordinatenursprung setzen"
+#define L_COORD_ORIGIN_MSG "In Home-Position bei abgeschalteter Nachfuehrung legt dies den physikalischen/koordinatenbezogenen Ursprung fuer Sync-Grenzen fest."
 
 #define L_TRK_FASTER "schneller"
 #define L_TRK_SLOWER "langsamer"
@@ -316,6 +321,7 @@
 #define L_MERIDIAN_FLIP_AUTO "Automatischer Meridianflip bei Grenz&uuml;berschreitung"
 #define L_MERIDIAN_FLIP_NOW "Jetzt"
 #define L_MERIDIAN_FLIP_PAUSE "Pausiere an Homeposition w&auml;hrend Meridian Flip"
+#define L_MERIDIAN_FLIP_HOMING "Meridianflip, Homeposition"
 #define L_MERIDIAN_FLIP_PPS "Meridianflip, bevorzugte Pierseite"
 
 #define L_ORIENTATION_AUTO "Orientierungsänderung"
@@ -356,6 +362,17 @@
 #define L_LIMITS_RANGE_OVERHEAD "Obergrenze, in Grad 60 to 90"
 #define L_LIMITS_RANGE_MERIDIAN_E "Nach Meridian wenn Teleskop auf Ostseite der Montierung, in Grad +/- 270"
 #define L_LIMITS_RANGE_MERIDIAN_W "Nach Meridian wenn Teleskop auf Westseite der Montierung, in Grad +/- 270"
+
+// runtime sync limits
+#define L_SYNC_LIMITS_TITLE "Sync/Alignment-Grenzen"
+#define L_SYNC_LIMIT_SUMMARY_POLAR "Polgrenze"
+#define L_SYNC_LIMIT_SUMMARY_OFFSET1 "Offset-Grenze, Achse1"
+#define L_SYNC_LIMIT_SUMMARY_OFFSET2 "Achse2"
+#define L_SYNC_LIMIT_POLAR "Pol, 60 bis 90&deg;"
+#define L_SYNC_LIMIT_AXIS1 "Offset Achse 1, 0 bis 30&deg;"
+#define L_SYNC_LIMIT_AXIS2 "Offset Achse 2, 0 bis 30&deg;"
+#define L_SYNC_LIMIT_POLAR_OFF "Pol 90 = OFF"
+#define L_SYNC_LIMIT_OFFSET_OFF "Offset 0 = OFF"
 
 // location
 #define L_LOCATION_TITLE "Zeit und Ort"
@@ -414,7 +431,6 @@
 #define L_ADV_SET_FOOTER_MSG0 "Die meisten Änderungen an den Achseneinstellungen erfordern einen Neustart, damit sie wirksam werden."
 #define L_ADV_SET_FOOTER_MSG1 "Beachten Sie nach dem Drücken von [Upload] die obigen Änderungen, da der Upload möglicherweise aufgrund eines ungültigen Parameters abgelehnt wurde."
 #define L_ADV_SET_FOOTER_MSG2 "Wenn Sie [Zurücksetzen] wählen, kann diese Gruppe erst bearbeitet werden, wenn Sie OnStep neu starten."
-#define L_ADV_SET_FOOTER_MSG3 "Wenn IRUN auf einen anderen Wert als den Standardwert von Config.h eingestellt ist, wird IHOLD auf 50% (HALF) eingestellt."
 #define L_ADV_SET_FOOTER_MSG4 "Durch Ändern des Verhältnisses von Axis1-Schritten pro Wurmdrehung und Schritten pro Grad kann der Speicherbereich von Library NV beschädigt werden. Sichern Sie bei Bedarf zuerst alle Kataloge."
 
 // reset control
@@ -435,7 +451,7 @@
 #define L_NETWORK_PWD "Passwort"
 #define L_NETWORK_PWD_MSG "mindestens 8 Zeichen"
 #define L_NETWORK_EN_DHCP "DHCP aktivieren"
-#define L_NETWORK_EN_DHCP_MSG "Hinweis: obige Adressen werden ignoriert wenn DHCP aktiviert ist!"
+#define L_NETWORK_EN_DHCP_MSG "Bei DHCP werden IPs ignoriert"
 #define L_NETWORK_EN_STA "Aktiviere Stationsmodus"
 #define L_IP_ADDRESS "IP Addresse"
 #define L_GATEWAY "Gateway"
@@ -443,9 +459,13 @@
 #define L_NETWORK_CHA "Kanal"
 #define L_NETWORK_EN_AP_MODE "Aktiviere Access-Point Modus"
 
+#define L_NETWORK_OTA_TITLE "OTA SWS-Firmware-Aktualisierung"
+#define L_NETWORK_EN_OTA    "OTA-Modus aktivieren"
+#define L_REBOOT_OTA        "In den OTA-Modus neu starten"
+
 #define L_NETWORK_CONFIG_SECURITY "Netzwerk Konfiguration Sicherheit"
 
-#define L_NETWORK_AP "Access Point Modus"
+#define L_NETWORK_AP "Access Point Modus (auto wenn der Stationsmodus keine Verbindung herstellt)"
 
 #define L_NETWORK_RESTART_MSG "Sie m&uuml;ssen <u>manuell</u> neu starten, damit die &Auml;nderungen wirksam werden."
 

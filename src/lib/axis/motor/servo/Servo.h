@@ -8,7 +8,7 @@
 #include "../../../encoder/Encoder.h"
 #include "filter/Filter.h"
 #include "feedback/Feedback.h"
-#include "calibration/TrackingVelocity.h"
+#include "dc/calibration/TrackingVelocity.h"
 
 #include "dc/eE/EE.h"
 #include "dc/pE/PE.h"
@@ -30,14 +30,10 @@
   #define SERVO_SAFETY_STALL_POWER 33 // in percent
 #endif
 
-#ifndef AXIS1_SERVO_VELOCITY_CALIBRATION
-  #define AXIS1_SERVO_VELOCITY_CALIBRATION 1
-#endif
-
 class ServoMotor : public Motor {
   public:
     // constructor
-    ServoMotor(uint8_t axisNumber, int8_t reverse, ServoDriver *Driver, Filter *filter, Encoder *encoder, uint32_t encoderOrigin, bool encoderReverse, Feedback *feedback, ServoControl *control, long syncThreshold, bool useFastHardwareTimers = true);
+    ServoMotor(uint8_t axisNumber, int8_t reverse, ServoDriver *Driver, Filter *filter, Encoder *encoder, uint32_t encoderOrigin, bool encoderReverse, Feedback *feedback, ServoControl *control, bool useFastHardwareTimers = true);
 
     // sets up the servo motor
     bool init();
@@ -79,14 +75,15 @@ class ServoMotor : public Motor {
     long getTargetDistanceSteps();
 
     // get tracking mode steps per slewing mode step
-    inline int getStepsPerStepSlewing() { return 64; }
+    inline int getStepsPerStepSlewing() { return 256; }
 
-    // sets overall maximum frequency
+    // sets overall maximum frequency (also allows for 10% over)
     // \param frequency: rate of motion in steps (counts) per second
     void setFrequencyMax(float frequency) {
       velocityMax = frequency;
-      driver->setFrequencyMax(frequency);
-      feedback->setControlRange(frequency);
+      if (velocityMax < 1.0F) velocityMax = 1.0F;
+      driver->setFrequencyMax(frequency*1.1F);
+      feedback->setControlRange(frequency*1.1F);
     }
 
     // get movement frequency in steps per second
@@ -110,6 +107,8 @@ class ServoMotor : public Motor {
     // set origin of absolute encoders
     void encoderSetOrigin(uint32_t origin) { if (ready) encoder->setOrigin(origin); }
 
+    bool hasAbsoluteEncoder() const override { return encoder != nullptr && encoder->isAbsolute(); }
+
     // read encoder
     int32_t encoderRead();
 
@@ -132,6 +131,9 @@ class ServoMotor : public Motor {
     long delta = 0;
 
   private:
+    void stopSyntheticMotion();
+    void resetToTrackingBaseline();
+
     Filter *filter;
 
     void (*callback)() = NULL;
@@ -146,16 +148,18 @@ class ServoMotor : public Motor {
     uint8_t taskHandle = 0;
 
     float maxFrequency = HAL_FRACTIONAL_SEC; // fastest timer rate
+    float maxFrequency2, maxFrequency4, maxFrequency8, maxFrequency16, maxFrequency32, maxFrequency64, maxFrequency128;
     bool useFastHardwareTimers = true;
 
     bool encoderReverse = false;
     bool encoderReverseDefault = false;
+    volatile int8_t encoderDirection = 0;
+    int32_t lastEnc = 0;
+    uint32_t lastUs = 0;
 
-    // for absolute encoders
-    bool motorStepsInitDone = false;    // help determing when ready to set position
-    bool homeSet = false;               // help determing when ready to set position
+    bool motorStepsInitDone = false;    // help determining when absolute position is initialized
+    bool homeSet = false;               // help determining when startup home/origin was established
     uint32_t encoderOrigin = 0;         // the starting position
-    long syncThreshold = OFF;           // sync threshold in counts, or OFF
 
     int stepSize = 1;                   // step size
     volatile int  homeSteps = 1;        // step count for microstep sequence between home positions (driver indexer)
@@ -170,8 +174,6 @@ class ServoMotor : public Motor {
     float velocityMax = 0.0F;           // the maximum velocity allowed
 
     volatile int absStep = 1;           // absolute step size (unsigned)
-    volatile long originIndexSteps = 0; // for absolute motor position to axis position at coordinate origin
-
     // servo safety checks
     unsigned long lastCheckTime = 0;    // time since the last encoder position was checked
     unsigned long startTime = 0;        // time at start of servo polling

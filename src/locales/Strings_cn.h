@@ -26,6 +26,8 @@
 #define L_OK "Ok"
 #define L_ON "开"
 #define L_OFF "关"
+#define L_VISIT "经过"
+#define L_PAUSE "暂停"
 #define L_START "开始"
 #define L_DELTA "对冲值"
 #define L_DP_MSG  "相对"
@@ -292,6 +294,9 @@
 #define L_PARK "停车"
 #define L_SET_PARK "设置停车位置"
 #define L_SET_PARK_CURRENT_COORDS "在当前坐标处设置停放位置"
+#define L_COORD_ORIGIN_TITLE "坐标原点"
+#define L_COORD_ORIGIN "设置坐标原点"
+#define L_COORD_ORIGIN_MSG "在归位且关闭跟踪时，用于建立物理方向与坐标原点的关系，以用于同步限制。"
 
 #define L_TRK_FASTER "跟进"
 #define L_TRK_SLOWER "更快"
@@ -307,6 +312,7 @@
 #define L_MERIDIAN_FLIP_AUTO "越过边界时自动翻转子午线"
 #define L_MERIDIAN_FLIP_NOW "目前"
 #define L_MERIDIAN_FLIP_PAUSE "子午线翻转期间在原始位置暂停"
+#define L_MERIDIAN_FLIP_HOMING "子午线翻转归位"
 #define L_MERIDIAN_FLIP_PPS "经络翻转, 首选码头侧"
 
 #define L_ORIENTATION_AUTO "方向改变"
@@ -347,6 +353,17 @@
 #define L_LIMITS_RANGE_OVERHEAD "上限，以60到90度为单位"
 #define L_LIMITS_RANGE_MERIDIAN_E "如果将望远镜放在坐骑的东侧，则指向子午线，以+/- 270度为单位"
 #define L_LIMITS_RANGE_MERIDIAN_W "如果将望远镜放在坐骑西侧，则指向子午线，以+/- 270度为单位"
+
+// runtime sync limits
+#define L_SYNC_LIMITS_TITLE "同步/校准限制"
+#define L_SYNC_LIMIT_SUMMARY_POLAR "天极限制"
+#define L_SYNC_LIMIT_SUMMARY_OFFSET1 "偏移限制，轴1"
+#define L_SYNC_LIMIT_SUMMARY_OFFSET2 "轴2"
+#define L_SYNC_LIMIT_POLAR "天极，60至90&deg;"
+#define L_SYNC_LIMIT_AXIS1 "轴1偏移，0至30&deg;"
+#define L_SYNC_LIMIT_AXIS2 "轴2偏移，0至30&deg;"
+#define L_SYNC_LIMIT_POLAR_OFF "天极 90 = OFF"
+#define L_SYNC_LIMIT_OFFSET_OFF "偏移 0 = OFF"
 
 // location
 #define L_LOCATION_TITLE "时间地点"
@@ -405,7 +422,6 @@
 #define L_ADV_SET_FOOTER_MSG0 "大多数轴设置更改需要重新启动才能生效。"
 #define L_ADV_SET_FOOTER_MSG1 "在按下[Upload]后，请注意上述更改，因为上载可能由于参数无效而被拒绝。"
 #define L_ADV_SET_FOOTER_MSG2 "当您选择[还原]时，该组将不可编辑，直到您重新启动OnStep。"
-#define L_ADV_SET_FOOTER_MSG3 "如果 IRUN 设置为非 Config.h 默认值，则 IHOLD 设置为 50% (HALF)。"
 #define L_ADV_SET_FOOTER_MSG4 "更改每蠕虫蠕虫的Axis1步进数和每度步进数的比率可能会损坏Library NV存储区，如果需要，请首先备份所有目录。"
 
 // reset control
@@ -433,9 +449,13 @@
 #define L_NETWORK_CHA "频道"
 #define L_NETWORK_EN_AP_MODE "开启接入点模式"
 
+#define L_NETWORK_OTA_TITLE "OTA SWS固件更新"
+#define L_NETWORK_EN_OTA    "启用OTA模式"
+#define L_REBOOT_OTA        "重启进入OTA模式"
+
 #define L_NETWORK_CONFIG_SECURITY "网络配置安全"
 
-#define L_NETWORK_AP "访问点模式"
+#define L_NETWORK_AP "访问点模式（当工作站模式连接失败时自动启用）"
 
 #define L_NETWORK_RESTART_MSG "您必须手动<u>重新启动</ u>才能使更改生效."
 

@@ -50,13 +50,14 @@
 #define LED_STATUS                     ON //     ON, Enable LED flashes while connecting then steady once connected.          Infreq
 
 // DISPLAY -------------------------------------------------------------------------------------------------------------------------
-#define DISPLAY_LANGUAGE             L_en //   L_en, English. Or L_ce, L_de, L_en, L_us, L_es two letter country code.        Adjust
-#define DISPLAY_WEATHER                OFF //     ON, ON ambient conditions in locale default units.                           Option
+#define DISPLAY_LANGUAGE             L_en //   L_en, English. Or L_ca, L_cn, L_de, L_en, L_es, L_fr, L_it, L_jp, L_us, L_ro.  Adjust
+                                          //         Two letter country code (see Locales.h for more information.)
+#define DISPLAY_WEATHER               OFF //     ON, ON ambient conditions in locale default units.                           Option
 #define DISPLAY_INTERNAL_TEMPERATURE  OFF //    OFF, ON internal MCU temp. in locale default units.                           Option
-#define DISPLAY_RESET_CONTROLS         OFF //     ON, ON allows reset if supported, FWU for STM32 firmware upload pin HIGH.    Option
-
+#define DISPLAY_RESET_CONTROLS        OFF //     ON, ON allows reset if supported, FWU for STM32 firmware upload pin HIGH.    Option
+#define DISPLAY_COORDINATE_ORIGIN     OFF //    OFF, ON to display the coordinate origin control tile on the mount page.      Option
 #define DISPLAY_SERVO_MONITOR         OFF //    OFF, ON to display the servo monitor for OnStepX (any axis.)                  Option
-#define DISPLAY_SERVO_ORIGIN_CONTROLS OFF //    OFF, ON to display control to set the absolute encoder origin for servos.     Option
+#define DISPLAY_STALLGUARD_MONITOR    OFF //    OFF, ON to display the StallGuard monitor for OnStepX (any axis.)             Option
 
 // ENCODER SUPPORT -----------------------------------------------------------------------------------------------------------------
 // Some of these settings are stored in NV (EEPROM) as the default values when first uploaded.  Later changes below may be

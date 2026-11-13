@@ -57,6 +57,7 @@
   }
 
   bool IPSerialClient::isConnected() {
+    lastActivityTimeMs = millis();
     if (WiFi.status() == WL_CONNECTED) {
       if (!cmdSvrClient.connected()) {
         cmdSvrClient.stop();
@@ -108,7 +109,7 @@
   }
 
   void IPSerialClient::poll() {
-    if ((long)(millis() - lastActivityTimeMs) > clientTimeoutMs && cmdSvrClient.connected()) cmdSvrClient.stop();
+    if (millis() - lastActivityTimeMs > clientTimeoutMs && cmdSvrClient.connected()) cmdSvrClient.stop();
   }
 
   IPSerialClient SerialIPClient;

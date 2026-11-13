@@ -183,6 +183,9 @@ TmcStepDirDriver::TmcStepDirDriver(uint8_t axisNumber, const StepDirDriverPins *
 bool TmcStepDirDriver::init() {
   if (!StepDirDriver::init()) return false;
 
+  // Interpolation is not exposed as a runtime parameter.
+  if (isnan(intpol.value)) intpol.value = intpol.valueDefault;
+
   if (!driverModel) {
     DF("WRN:"); D(axisPrefix); DLF("unknown driver model!");
     return false;
@@ -205,6 +208,11 @@ bool TmcStepDirDriver::init() {
   // use low speed mode switch for TMC drivers
   modeSwitchAllowed = microstepRatio != 1;
   modeSwitchFastAllowed = false;
+
+  VF("MSG:"); V(axisPrefix);
+  if (modeSwitchAllowed) { VLF("ModeSwitch Allowed"); }else { VLF("ModeSwitch Disabled"); }
+  VF("MSG:"); V(axisPrefix);
+  if (modeSwitchFastAllowed) { VLF("ModeSwitchFast Allowed"); } else { VLF("ModeSwitchFast Disabled"); }
 
   return true;
 }

@@ -114,6 +114,11 @@ StepDirDriver::StepDirDriver(uint8_t axisNumber, const StepDirDriverPins *Pins, 
 }
 
 bool StepDirDriver::init() {
+  if (driverModel >= DRIVER_MODEL_COUNT) {
+    DF("ERR:"); D(axisPrefix); DLF("invalid driver model");
+    return false;
+  }
+
   VF("MSG:"); V(axisPrefix); VL(name());
 
   // check if platform pulse width (ns) is ok for this stepper driver timing in PULSE mode
@@ -122,7 +127,7 @@ bool StepDirDriver::init() {
     if (axisNumber > 2) pulseWidth = 2000;
 
     if (DriverPulseWidth[driverModel] == OFF) {
-      VF("MSG:"); V(axisPrefix); V(DRIVER_NAME[driverModel]); VF(" min. pulse width unknown!");
+      VF("MSG:"); V(axisPrefix); V(DRIVER_NAME[driverModel]); VLF(" min. pulse width unknown!");
     }
 
     if (DriverPulseWidth[driverModel] > pulseWidth) {
@@ -156,14 +161,16 @@ bool StepDirDriver::init() {
   microstepCodeSlewing = subdivisionsToCode(normalizedMicrostepsSlewing);
 
   if (microstepCode == OFF || microstepCodeSlewing == OFF) {
-    DF("MSG:"); D(axisPrefix); DF("invalid microstep mode for this driver.");
+    DF("MSG:"); D(axisPrefix); DLF("invalid microstep mode for this driver.");
     return false;
   }
 
   microstepRatio = normalizedMicrosteps/normalizedMicrostepsSlewing;
 
-  normalizedDecay = lround(decay.value);
-  normalizedDecaySlewing = lround(decaySlewing.value);
+  // drivers that don't expose decay as a runtime parameter (e.g. StepDirGeneric) never set decay.value,
+  // fall back to the compile-time default instead of lround(NAN)
+  normalizedDecay = lround(isnan(decay.value) ? decay.valueDefault : decay.value);
+  normalizedDecaySlewing = lround(isnan(decaySlewing.value) ? decaySlewing.valueDefault : decaySlewing.value);
 
   // automatically set fault status for known drivers
   if (statusMode == ON) {
@@ -261,7 +268,9 @@ const char* StepDirDriver::name() {
 // update status info. for driver
 void StepDirDriver::updateStatus() {
   if (statusMode == ON) {
-    if ((long)(millis() - timeLastStatusUpdate) > 200) {
+    const unsigned long now = millis();
+
+    if (now - timeLastStatusUpdate > 200U) {
       readStatus();
 
       // open load indication is not reliable in standstill
@@ -270,7 +279,7 @@ void StepDirDriver::updateStatus() {
                      status.overTemperatureWarning ||
                      status.overTemperature;
 
-      timeLastStatusUpdate = millis();
+      timeLastStatusUpdate = now;
     }
   } else
   if (statusMode == LOW || statusMode == HIGH) {
